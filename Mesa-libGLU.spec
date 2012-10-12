@@ -36,6 +36,7 @@ Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki SGI libGLU
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	OpenGL-devel >= 1.2
+Provides:	OpenGL-GLU-devel = 1.3
 
 %description devel
 Header files for SGI libGLU library.
