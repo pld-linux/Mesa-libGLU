@@ -6,7 +6,7 @@ Summary:	SGI implementation of libGLU OpenGL library
 Summary(pl.UTF-8):	Implementacja SGI biblioteki libGLU ze standardu OpenGL
 Name:		Mesa-libGLU
 Version:	9.0.0
-Release:	1
+Release:	2
 License:	SGI Free Software License B v2.0 (MIT-like)
 Group:		Libraries
 Source0:	ftp://ftp.freedesktop.org/pub/mesa/glu/glu-%{version}.tar.bz2
