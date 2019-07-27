@@ -5,12 +5,12 @@
 Summary:	SGI implementation of libGLU OpenGL library
 Summary(pl.UTF-8):	Implementacja SGI biblioteki libGLU ze standardu OpenGL
 Name:		Mesa-libGLU
-Version:	9.0.0
-Release:	2
+Version:	9.0.1
+Release:	1
 License:	SGI Free Software License B v2.0 (MIT-like)
 Group:		Libraries
-Source0:	ftp://ftp.freedesktop.org/pub/mesa/glu/glu-%{version}.tar.bz2
-# Source0-md5:	be9249132ff49275461cf92039083030
+Source0:	ftp://ftp.freedesktop.org/pub/mesa/glu/glu-%{version}.tar.xz
+# Source0-md5:	151aef599b8259efe9acd599c96ea2a3
 URL:		http://www.mesa3d.org/
 BuildRequires:	OpenGL-devel >= 1.2
 BuildRequires:	autoconf >= 2.60
@@ -18,6 +18,8 @@ BuildRequires:	automake
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2.2
 BuildRequires:	pkgconfig
+BuildRequires:	tar >= 1:1.22
+BuildRequires:	xz
 Requires:	OpenGL >= 1.2
 Provides:	OpenGL-GLU = 1.3
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
