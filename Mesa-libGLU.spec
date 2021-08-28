@@ -1,20 +1,27 @@
 #
 # Conditional build:
+%bcond_with	glvnd		# use GLVND as OpenGL provider
+%bcond_with	osmesa		# use OSMesa as OpenGL provider
 %bcond_without	static_libs	# static library
 #
+%if %{without glvnd} && %{without osmesa}
+%define	with_generic_opengl	1
+%endif
 Summary:	SGI implementation of libGLU OpenGL library
 Summary(pl.UTF-8):	Implementacja SGI biblioteki libGLU ze standardu OpenGL
 Name:		Mesa-libGLU
-Version:	9.0.1
+Version:	9.0.2
 Release:	1
 License:	SGI Free Software License B v2.0 (MIT-like)
 Group:		Libraries
 Source0:	ftp://ftp.freedesktop.org/pub/mesa/glu/glu-%{version}.tar.xz
-# Source0-md5:	151aef599b8259efe9acd599c96ea2a3
+# Source0-md5:	2b0f13fa5b949bfb3a995927c6e35125
 URL:		http://www.mesa3d.org/
-BuildRequires:	OpenGL-devel >= 1.2
+%{?with_osmesa:BuildRequires:	Mesa-libOSMesa-devel}
+%{?with_generic_opengl:BuildRequires:	OpenGL-devel >= 1.2}
 BuildRequires:	autoconf >= 2.60
 BuildRequires:	automake
+%{?with_glvnd:BuildRequires:	libglvnd-libGL-devel}
 BuildRequires:	libstdc++-devel
 BuildRequires:	libtool >= 2:2.2
 BuildRequires:	pkgconfig
@@ -37,7 +44,9 @@ Summary:	Header files for SGI libGLU library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki SGI libGLU
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	OpenGL-devel >= 1.2
+%{?with_osmesa:Requires:	Mesa-libOSMesa-devel}
+%{?with_generic_opengl:Requires:	OpenGL-devel >= 1.2}
+%{?with_glvnd:Requires:	libglvnd-libGL-devel}
 Provides:	OpenGL-GLU-devel = 1.3
 
 %description devel
@@ -68,6 +77,8 @@ Statyczna biblioteka SGI libGLU.
 %{__autoconf}
 %{__automake}
 %configure \
+	%{?with_glvnd:--enable-libglvnd} \
+	%{?with_osmesa:--enable-osmesa} \
 	--disable-silent-rules \
 	%{!?with_static_libs:--disable-static}
 
@@ -97,7 +108,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libGLU.so
 %{_includedir}/GL/glu.h
-%{_includedir}/GL/glu_mangle.h
 %{_pkgconfigdir}/glu.pc
 
 %if %{with static_libs}
