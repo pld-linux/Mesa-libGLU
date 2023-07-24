@@ -1,6 +1,6 @@
 #
 # Conditional build:
-%bcond_with	glvnd		# use GLVND as OpenGL provider
+%bcond_without	glvnd		# use GLVND as OpenGL provider
 %bcond_with	osmesa		# use OSMesa as OpenGL provider
 %bcond_without	static_libs	# static library
 #
@@ -10,21 +10,21 @@
 Summary:	SGI implementation of libGLU OpenGL library
 Summary(pl.UTF-8):	Implementacja SGI biblioteki libGLU ze standardu OpenGL
 Name:		Mesa-libGLU
-Version:	9.0.2
+Version:	9.0.3
 Release:	1
 License:	SGI Free Software License B v2.0 (MIT-like)
 Group:		Libraries
-Source0:	ftp://ftp.freedesktop.org/pub/mesa/glu/glu-%{version}.tar.xz
-# Source0-md5:	2b0f13fa5b949bfb3a995927c6e35125
-URL:		http://www.mesa3d.org/
+Source0:	https://archive.mesa3d.org/glu/glu-%{version}.tar.xz
+# Source0-md5:	06a4fff9179a98ea32ef41b6d83f6b19
+URL:		https://www.mesa3d.org/
 %{?with_osmesa:BuildRequires:	Mesa-libOSMesa-devel}
 %{?with_generic_opengl:BuildRequires:	OpenGL-devel >= 1.2}
-BuildRequires:	autoconf >= 2.60
-BuildRequires:	automake
 %{?with_glvnd:BuildRequires:	libglvnd-libGL-devel}
 BuildRequires:	libstdc++-devel
-BuildRequires:	libtool >= 2:2.2
+BuildRequires:	meson >= 0.52.0
+BuildRequires:	ninja >= 1.5
 BuildRequires:	pkgconfig
+BuildRequires:	rpmbuild(macros) >= 1.736
 BuildRequires:	tar >= 1:1.22
 BuildRequires:	xz
 Requires:	OpenGL >= 1.2
@@ -72,26 +72,16 @@ Statyczna biblioteka SGI libGLU.
 %setup -q -n glu-%{version}
 
 %build
-%{__libtoolize}
-%{__aclocal}
-%{__autoconf}
-%{__automake}
-%configure \
-	%{?with_glvnd:--enable-libglvnd} \
-	%{?with_osmesa:--enable-osmesa} \
-	--disable-silent-rules \
-	%{!?with_static_libs:--disable-static}
+%meson build \
+	%{!?with_static_libs:--default-library=shared} \
+	%{!?with_glvnd:-Dgl_provider=%{?with_osmesa:osmesa}%{!?with_osmesa:gl}}
 
-%{__make}
+%ninja_build -C build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%{__make} install \
-	DESTDIR=$RPM_BUILD_ROOT
-
-# there is pkg-config support; also, traditionally libGLU didn't have .la
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libGLU.la
+%ninja_install -C build
 
 %clean
 rm -rf $RPM_BUILD_ROOT
