@@ -72,16 +72,16 @@ Statyczna biblioteka SGI libGLU.
 %setup -q -n glu-%{version}
 
 %build
-%meson build \
+%meson \
 	%{!?with_static_libs:--default-library=shared} \
 	%{!?with_glvnd:-Dgl_provider=%{?with_osmesa:osmesa}%{!?with_osmesa:gl}}
 
-%ninja_build -C build
+%meson_build
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
-%ninja_install -C build
+%meson_install
 
 %clean
 rm -rf $RPM_BUILD_ROOT
